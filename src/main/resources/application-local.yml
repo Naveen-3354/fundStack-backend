@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fundStack
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+amfi:
+  schemeList: https://www.amfiindia.com/api/populate-scheme?MF_ID=
+  schemeData: https://portal.amfiindia.com/DownloadSchemeData_Po.aspx?mf=0
+  dailyNavData: https://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?frmdt=
+  navHistoryData: https://www.amfiindia.com/modules/NavHistoryPeriod
+  sifHistoryData: https://www.amfiindia.com/api/sif-nav-history?query_type=
+  sifDailyNav: https://portal.amfiindia.com/spages/SIF_NAVAll.txt
+  historyData: https://www.amfiindia.com/api/nav-history?query_type=
+  newFundOffer: https://www.amfiindia.com/api/new-fund-offer
+  schemeDetail: https://www.amfiindia.com/api/scheme-details?MF_ID=%s&scheme_id=%s
+  schemeDocs: https://www.amfiindia.com/api/schemes/%s/documents
+  schemeNavAndAum: https://www.amfiindia.com/api/scheme-nav?MF_ID=%s&scheme_id=%s&strOption=%s

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: FundStack
+  profiles:
+    active: local
