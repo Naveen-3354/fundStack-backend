@@ -29,3 +29,14 @@ amfi:
   schemeDetail: https://www.amfiindia.com/api/scheme-details?MF_ID=%s&scheme_id=%s
   schemeDocs: https://www.amfiindia.com/api/schemes/%s/documents
   schemeNavAndAum: https://www.amfiindia.com/api/scheme-nav?MF_ID=%s&scheme_id=%s&strOption=%s
+security:
+  jwt:
+    secret: fundstack-demo-secret-key-fundstack-demo-secret-key
+    access-validity-seconds: 900
+    refresh-validity-seconds: 604800
+  bootstrap:
+    admin-user-id: admin
+    admin-password: Admin@123
+    admin-email: admin@fundstack.local
+  cookie:
+    secure: false
