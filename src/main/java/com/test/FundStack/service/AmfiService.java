@@ -1,20 +1,18 @@
 package com.test.FundStack.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.FundStack.model.amfi.AmfiSchemeDetailApiResponse;
 import com.test.FundStack.model.amfi.AmfiSchemeDetailResponse;
 import com.test.FundStack.model.amfi.SchemeList;
 import com.test.FundStack.model.amfi.SchemeNavResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,21 +29,17 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AmfiService {
-    
-    @Value("${amfi.schemeList}")
-    private String schemeListUrl;
 
-    @Value("${amfi.schemeDetail}")
-    private String schemeDetailUrl;
+    private static final String KEY_SCHEME_LIST = "schemeList";
+    private static final String KEY_SCHEME_DETAIL = "schemeDetail";
+    private static final String KEY_SCHEME_NAV_AUM = "schemeNavAndAum";
 
-    @Value("${amfi.schemeNavAndAum}")
-    private String schemeNavUrl;
-    
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final AmfiUrlConfigService amfiUrlConfigService;
 
     public List<SchemeList> getListOfSchemes(String amfiId) {
-
+        String schemeListUrl = amfiUrlConfigService.getUrlByKey(KEY_SCHEME_LIST);
         ResponseEntity<List<SchemeList>> response =
                 restTemplate.exchange(
                         schemeListUrl + amfiId,
@@ -58,6 +52,7 @@ public class AmfiService {
     }
 
     public Optional<AmfiSchemeDetailResponse> fetchSchemeDetails(String mfId, String schemeId) {
+        String schemeDetailUrl = amfiUrlConfigService.getUrlByKey(KEY_SCHEME_DETAIL);
         String url = String.format(schemeDetailUrl, mfId, schemeId);
         AmfiSchemeDetailApiResponse response =
                 getSchemeDetails(url, AmfiSchemeDetailApiResponse.class);
@@ -68,15 +63,18 @@ public class AmfiService {
     }
 
     public List<SchemeNavResponseDTO> fetchSchemeNavDetails(String mfId, String schemeId) {
+        String schemeNavUrl = amfiUrlConfigService.getUrlByKey(KEY_SCHEME_NAV_AUM);
         String url = String.format(schemeNavUrl, mfId, schemeId, "NAV");
         String json = restTemplate.getForObject(url, String.class);
         if (json == null || json.isBlank()) {
             return Collections.emptyList();
         }
-        List<SchemeNavResponseDTO> response = objectMapper.readValue(
-                json,
-                new TypeReference<>() {}
-        );
+        List<SchemeNavResponseDTO> response;
+        try {
+            response = objectMapper.readValue(json, new TypeReference<>() {});
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to parse AMFI NAV response", e);
+        }
         return response == null || response.isEmpty() ? Collections.emptyList() : response;
     }
 
