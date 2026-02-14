@@ -17,4 +17,5 @@ import java.util.Optional;
 @Repository
 public interface FundHouseRepo extends CrudRepositoryBase<FundHouse, Long>{
     Optional<FundHouse> findByAmfiId(String amfiId);
+    Optional<FundHouse> findByName(String name);
 }

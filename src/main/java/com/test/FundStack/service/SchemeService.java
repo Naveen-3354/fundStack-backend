@@ -3,6 +3,7 @@ package com.test.FundStack.service;
 
 import com.test.FundStack.entity.FundHouse;
 import com.test.FundStack.entity.Scheme;
+import com.test.FundStack.model.PaginationResponse;
 import com.test.FundStack.model.amfi.SchemeCreatedEvent;
 import com.test.FundStack.model.amfi.SchemeList;
 import com.test.FundStack.repository.CrudRepositoryBase;
@@ -11,6 +12,9 @@ import com.test.FundStack.repository.SchemeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -33,23 +37,45 @@ public class SchemeService extends CrudService<Scheme, Long> {
     private final FundHouseRepo fundHouseRepo;
     private final SchemeRepository schemeRepository;
     private final SchemeOrchestrationService schemeOrchestrationService;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     public SchemeService(
             CrudRepositoryBase<Scheme, Long> repository,
             AmfiService amfiService,
             FundHouseRepo fundHouseRepo,
             SchemeRepository schemeRepository,
-            SchemeOrchestrationService schemeOrchestrationService,
-            ApplicationEventPublisher applicationEventPublisher
+            SchemeOrchestrationService schemeOrchestrationService
     ) {
         super(repository);
         this.amfiService = amfiService;
         this.fundHouseRepo = fundHouseRepo;
         this.schemeRepository = schemeRepository;
         this.schemeOrchestrationService = schemeOrchestrationService;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
+
+    @Transactional
+    public PaginationResponse<List<Scheme>> getSchemes(
+            int pageNo,
+            int pageSize,
+            List<Long> fundHouseIds,
+            String search
+    ) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Scheme> schemePage =
+                schemeRepository.searchSchemes(
+                        fundHouseIds,
+                        search == null ? "" : search,
+                        pageable
+                );
+
+        return PaginationResponse.<List<Scheme>>builder()
+                .pageNo(pageNo)
+                .pageSize(schemePage.getSize())
+                .totalPages(schemePage.getTotalPages())
+                .totalCount(schemePage.getTotalElements())
+                .data(schemePage.getContent())
+                .build();
+    }
+
 
     @Transactional
     public List<Scheme> getSchemesList(String amfiId) {

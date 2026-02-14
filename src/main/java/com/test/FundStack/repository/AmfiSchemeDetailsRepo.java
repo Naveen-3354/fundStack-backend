@@ -16,5 +16,5 @@ import java.util.Optional;
 
 @Repository
 public interface AmfiSchemeDetailsRepo extends CrudRepositoryBase<AmfiSchemeDetails, Long>{
-    Optional<AmfiSchemeDetails> findByScheme(Scheme scheme);
+    Optional<AmfiSchemeDetails> findBySchemeId(Long schemeId);
 }

@@ -15,9 +15,9 @@ import java.util.List;
  */
 
 @Data
-public class AmfiSchemeDetailApiResponse {
+public class AmfiSchemeDetailApiResponse <T> {
 
     @JsonProperty("data")
-    private List<AmfiSchemeDetailResponse> data;
+    private List<T> data;
 }
 

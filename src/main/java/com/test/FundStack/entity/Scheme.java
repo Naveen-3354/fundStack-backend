@@ -2,6 +2,7 @@ package com.test.FundStack.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,12 +42,17 @@ public class Scheme extends BaseEntity {
     @JsonBackReference
     private FundHouse fundHouse;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonBackReference
+    private Category category;
+
     @OneToOne(
             mappedBy = "scheme",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JsonManagedReference
+    @JsonIgnore
     private AmfiSchemeDetails amfiDetails;
 
     @OneToMany(
@@ -55,5 +61,6 @@ public class Scheme extends BaseEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<SchemePlanOption> planOptions = new ArrayList<>();
 }

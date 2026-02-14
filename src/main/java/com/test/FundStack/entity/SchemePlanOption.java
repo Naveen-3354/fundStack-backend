@@ -27,14 +27,19 @@ public class SchemePlanOption extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "scheme_nav_name", nullable = false)
+    @Column(name = "scheme_nav_name")
     private String schemeNavName;
+
+    @Column(name = "amfi_code")
+    private String amfiCode;
     
-    @Column(name = "option_type", nullable = false)
+    @Column(name = "option_type")
     private String optionType;
 
-    @Column(name = "plan_type", nullable = false)
+    @Column(name = "plan_type")
     private String planType;
+    
+    private String rtaSchemeCode;
 
     @Column(name = "isin_div_payout_growth")
     private String isinDivPayoutIsinGrowth;
