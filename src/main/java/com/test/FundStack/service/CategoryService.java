@@ -25,23 +25,18 @@ public class CategoryService {
 
     private final CategoryRepo categoryRepository;
 
-    // CREATE
     public CategoryDTO create(CategoryDTO dto) {
-
         Category parent = null;
-
         if (dto.getParentId() != null) {
             parent = categoryRepository.findById(dto.getParentId())
                     .orElseThrow(() -> new RuntimeException("Parent not found"));
         }
-
         Category category = Category.builder()
                 .name(dto.getName())
                 .parent(parent)
                 .build();
 
         categoryRepository.save(category);
-
         return mapToDTO(category);
     }
 

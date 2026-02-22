@@ -108,7 +108,7 @@ public class SchemeService extends CrudService<Scheme, Long> {
             return Collections.emptyList();
         }
         List<Scheme> savedSchemes = saveAll(schemesToSave);
-        savedSchemes.forEach(schemeOrchestrationService::handleSchemeCreated);
+//        savedSchemes.forEach(schemeOrchestrationService::handleSchemeCreated);
         return savedSchemes;
     }
 

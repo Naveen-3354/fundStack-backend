@@ -1,7 +1,6 @@
 package com.test.FundStack.repository;
 
-import com.test.FundStack.entity.AmfiSchemeDetails;
-import com.test.FundStack.entity.Scheme;
+import com.test.FundStack.entity.SchemeDetails;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -15,6 +14,6 @@ import java.util.Optional;
  */
 
 @Repository
-public interface AmfiSchemeDetailsRepo extends CrudRepositoryBase<AmfiSchemeDetails, Long>{
-    Optional<AmfiSchemeDetails> findBySchemeId(Long schemeId);
+public interface SchemeDetailsRepo extends CrudRepositoryBase<SchemeDetails, Long>{
+    Optional<SchemeDetails> findBySchemeId(Long schemeId);
 }

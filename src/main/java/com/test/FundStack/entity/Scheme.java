@@ -41,11 +41,11 @@ public class Scheme extends BaseEntity {
     @JoinColumn(name = "fund_house_id", nullable = false)
     @JsonBackReference
     private FundHouse fundHouse;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    @JsonBackReference
-    private Category category;
+    
+    private boolean planOptionsSynced = false;
+    private boolean basicDetailsSynced = false;
+    private boolean xmlDetailsSynced = false;
+    private boolean transactionDetailsSynced = false;
 
     @OneToOne(
             mappedBy = "scheme",
@@ -53,7 +53,20 @@ public class Scheme extends BaseEntity {
             orphanRemoval = true
     )
     @JsonIgnore
-    private AmfiSchemeDetails amfiDetails;
+    private SchemeDetails amfiDetails;
+
+    @OneToOne(
+            mappedBy = "scheme",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    private SchemeTransactions schemeTransactions;
+
+    @OneToMany(mappedBy = "scheme",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<SchemeManager> schemeManagers = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "scheme",
@@ -62,5 +75,6 @@ public class Scheme extends BaseEntity {
             orphanRemoval = true
     )
     @JsonIgnore
+    @JsonManagedReference
     private List<SchemePlanOption> planOptions = new ArrayList<>();
 }

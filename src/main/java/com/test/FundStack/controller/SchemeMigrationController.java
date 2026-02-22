@@ -44,7 +44,7 @@ public class SchemeMigrationController {
                         .build()
         );
     }
-
+    
     @PostMapping("/amc-name")
     public ResponseEntity<ApiResponse<String>> migrateByAmcName(
             @Valid @RequestBody MigrationRequest request) {

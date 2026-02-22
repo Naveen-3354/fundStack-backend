@@ -148,45 +148,29 @@ public class AmfiService {
 
     @Transactional
     public void fetchAndImportCsv() throws Exception {
-
         String url = amfiUrlConfigService.getUrlByKey(KEY_SCHEME_CSV);
-
         byte[] response = restTemplate.getForObject(url, byte[].class);
-
         if (response == null || response.length == 0) {
             throw new RuntimeException("Empty response from AMFI URL");
         }
-
         LocalDate importDate = LocalDate.now();
-
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new ByteArrayInputStream(response)))) {
-
             CSVFormat format = CSVFormat.DEFAULT.builder()
                     .setHeader()
                     .setSkipHeaderRecord(true)
                     .setIgnoreHeaderCase(true)
                     .setTrim(true)
                     .build();
-
             CSVParser parser = new CSVParser(reader, format);
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy", Locale.ENGLISH);
-
             List<SchemeCsv> batch = new ArrayList<>();
-
             for (CSVRecord record : parser) {
-
                 String code = record.get("Code");
-
-                // Skip if already imported today
                 boolean exists = schemeCsvRepository
                         .existsByCodeAndImportDate(code, importDate);
-
                 if (exists) {
                     continue;
                 }
-
                 String amc = record.get("AMC");
                 String schemeName = record.get("Scheme Name");
                 String schemeType = record.get("Scheme Type");
@@ -196,22 +180,16 @@ public class AmfiService {
                 String launchDateStr = record.get("Launch Date");
                 String closureDateStr = record.get("Closure Date");
                 String isins = record.get("ISIN Div Payout/ ISIN GrowthISIN Div Reinvestment");
-
                 LocalDate launchDate = null;
                 LocalDate closureDate = null;
-
                 if (launchDateStr != null && !launchDateStr.isBlank()) {
                     launchDate = parseDate(launchDateStr);
                 }
-
                 if (closureDateStr != null && !closureDateStr.isBlank()) {
                     closureDate = parseDate(closureDateStr);
                 }
-
-                // Handle ISIN (sometimes combined)
                 String isinDivPayout = null;
                 String isinGrowthReinvest = null;
-
                 if (isins != null && !isins.isBlank()) {
                     if (isins.length() > 12) {
                         isinDivPayout = isins.substring(0, 12);
@@ -220,7 +198,6 @@ public class AmfiService {
                         isinGrowthReinvest = isins;
                     }
                 }
-
                 SchemeCsv entity = SchemeCsv.builder()
                         .amcName(amc)
                         .code(code)
@@ -237,15 +214,12 @@ public class AmfiService {
                         .active(false)
                         .status(ImportStatus.NEW)
                         .build();
-
                 batch.add(entity);
             }
-
             schemeCsvRepository.saveAll(batch);
         }
     }
-
-
+    
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
     
     private LocalDate parseDate(String dateStr) {

@@ -7,6 +7,7 @@ import com.test.FundStack.model.PaginationResponse;
 import com.test.FundStack.model.schemeMigration.SchemeGroupedDto;
 import com.test.FundStack.model.schemeMigration.SchemeNavDto;
 import com.test.FundStack.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class SchemeCsvService {
     private final SchemeCsvRepository schemeCsvRepository;
     private final SchemeRepository schemeRepository;
     private final SchemePlanOptionRepo schemePlanOptionRepo;
-    private final FundHouseRepo fundHouseRepository;
+    private final SchemeDetailsRepo schemeDetailsRepo;
     private final CategoryRepo categoryRepo;
     
     public void migrateBySchemeName(String schemeName){
@@ -89,26 +90,17 @@ public class SchemeCsvService {
     @Transactional
     public void migrateSchemeCsv(List<SchemeCsv> csvList) {
         for (SchemeCsv csv : csvList) {
-            FundHouse fundHouse = fundHouseRepository
-                    .findByName(csv.getAmcName())
-                    .orElseGet(() -> fundHouseRepository.save(
-                            FundHouse.builder()
-                                    .name(csv.getAmcName())
-                                    .build()
-                    ));
-            Category category = getOrCreateCategory(csv.getSchemeCategory());
             Scheme scheme = schemeRepository
-                    .findByNameAndFundHouse(csv.getSchemeName(), fundHouse)
-                    .orElseGet(() -> schemeRepository.save(
-                            Scheme.builder()
-                                    .name(csv.getSchemeName())
-                                    .amfiId(csv.getCode())
-                                    .fundHouse(fundHouse)
-                                    .category(category)
-                                    .build()
-                    ));
-            if (scheme.getCategory() == null) {
-                scheme.setCategory(category);
+                    .findByName(csv.getSchemeName())
+                    .orElseThrow( () -> new EntityNotFoundException("Scheme not found."));
+            Category category = getOrCreateCategory(csv.getSchemeCategory());
+                SchemeDetails schemeDetails = schemeDetailsRepo.findBySchemeId(scheme.getId())
+                        .orElseGet(() -> SchemeDetails.builder()
+                                .scheme(scheme)
+                                .build());
+            if (schemeDetails.getCategory() == null) {
+                schemeDetails.setCategory(category);
+                schemeDetailsRepo.save(schemeDetails);
             }
             SchemePlanOption option = SchemePlanOption.builder()
                     .schemeNavName(csv.getSchemeNavName())
@@ -178,8 +170,6 @@ public class SchemeCsvService {
 
         if (childName == null)
             return parent;
-
-        // 2️⃣ Find or create child
         return categoryRepo
                 .findByNameAndParent(childName, parent)
                 .orElseGet(() -> categoryRepo.save(
