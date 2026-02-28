@@ -1,6 +1,7 @@
 package com.test.FundStack.service;
 
 
+import com.test.FundStack.entity.NavHistory;
 import com.test.FundStack.entity.Scheme;
 import com.test.FundStack.entity.SchemePlanOption;
 import com.test.FundStack.model.amfi.SchemeNavResponseDTO;
@@ -34,15 +35,21 @@ public class SchemePlanOptionService extends CrudService<SchemePlanOption, Long>
     private final SchemePlanOptionRepo schemePlanOptionRepo;
     private final SchemeRepository schemeRepository;
     private final AmfiService amfiService;
+    private final NavService navService;
+    private final SchemeReturnsService schemeReturnsService;
     
     protected SchemePlanOptionService(CrudRepositoryBase<SchemePlanOption, Long> repository,
                                       SchemePlanOptionRepo schemePlanOptionRepo,
                                       SchemeRepository schemeRepository,
-                                      AmfiService amfiService) {
+                                      AmfiService amfiService,
+                                      NavService navService,
+                                      SchemeReturnsService schemeReturnsService) {
         super(repository);
         this.schemePlanOptionRepo = schemePlanOptionRepo;
         this.schemeRepository = schemeRepository;
         this.amfiService = amfiService;
+        this.navService = navService;
+        this.schemeReturnsService = schemeReturnsService;
     }
 
     @Transactional

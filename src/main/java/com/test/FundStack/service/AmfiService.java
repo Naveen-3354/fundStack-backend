@@ -4,8 +4,10 @@ package com.test.FundStack.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.FundStack.entity.*;
+import com.test.FundStack.enums.FundType;
 import com.test.FundStack.enums.ImportStatus;
 import com.test.FundStack.model.amfi.*;
+import com.test.FundStack.model.navHistory.NavHistoryResponse;
 import com.test.FundStack.model.xml.SchemeSummaryDocument;
 import com.test.FundStack.repository.*;
 import jakarta.transaction.Transactional;
@@ -50,6 +52,8 @@ public class AmfiService {
     private static final String KEY_SCHEME_DOCS = "schemeDocs";
     private static final String KEY_SCHEME_DOCS_XML = "schemeDocsXml";
     private static final String KEY_SCHEME_CSV = "schemeCSV";
+    private static final String NAV_HISTORY_SIF = "sifHistoryData";
+    private static final String NAV_HISTORY = "navHistoryData";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -233,6 +237,37 @@ public class AmfiService {
     
     public <T> T getSchemeDetails(String url, Class<T> responseType) {
         return restTemplate.getForObject(url, responseType);
+    }
+    
+    public List<NavHistoryResponse> getNavHistory(FundType fundType, String amfiCode, LocalDate allotmentDate){
+        LocalDate end = LocalDate.now();
+        List<NavHistoryResponse> allResponses = new ArrayList<>();
+        LocalDate batchStart = allotmentDate;
+        while (!batchStart.isAfter(end)) {
+            LocalDate batchEnd = batchStart.plusYears(5).minusDays(5);
+            if (batchEnd.isAfter(end)) {
+                batchEnd = end;
+            }
+            String baseUrl = switch (fundType) {
+                case FundType.MF -> amfiUrlConfigService.getUrlByKey(NAV_HISTORY);
+                case FundType.SIF -> amfiUrlConfigService.getUrlByKey(NAV_HISTORY_SIF);
+            };
+            String url = baseUrl + "historical_period&" + "from_date=" + batchStart + "&to_date=" + batchEnd + "&sd_id="
+                    + amfiCode;
+            try {
+                ResponseEntity<NavHistoryResponse> response =
+                        restTemplate.getForEntity(url, NavHistoryResponse.class);
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    allResponses.add(response.getBody());
+                }
+
+            } catch (Exception e) {
+                log.error("Error while fetching data for range {} to {}: {}", batchStart, batchEnd, e.getMessage());
+            }
+            batchStart = batchEnd.plusDays(1);
+        }
+        return allResponses;
     }
 
 }
