@@ -3,8 +3,8 @@ package com.test.FundStack.model.xml;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Data;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * @author NaveenDhanasekaran

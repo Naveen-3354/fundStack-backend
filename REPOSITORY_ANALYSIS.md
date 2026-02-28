@@ -9,13 +9,13 @@ Key platform choices:
 - Spring Web MVC
 - Spring Data JPA
 - Spring Security
-- PostgreSQL driver
+- PostgreSQL driver:
+- **Controller layer** for REST endpoint
 - Lombok
 
 ## 2) High-Level Architecture
 
-The codebase follows a layered structure:
-- **Controller layer** for REST endpoints.
+The codebase follows a layered structures.
 - **Service layer** for business workflows and AMFI orchestration.
 - **Repository layer** built on Spring Data.
 - **Entity/model layer** for persistence and AMFI API DTO mapping.

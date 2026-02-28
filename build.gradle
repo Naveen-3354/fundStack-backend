@@ -29,11 +29,10 @@ dependencies {
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 	implementation 'org.apache.poi:poi:5.4.0'
 	implementation 'org.apache.poi:poi-ooxml:5.4.0'
 	implementation 'org.apache.commons:commons-csv:1.13.0'
-	// Source: https://mvnrepository.com/artifact/tools.jackson.dataformat/jackson-dataformat-xml
-	implementation 'tools.jackson.dataformat:jackson-dataformat-xml:3.1.0-rc1'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'

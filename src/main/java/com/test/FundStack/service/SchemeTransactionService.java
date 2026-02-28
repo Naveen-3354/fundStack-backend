@@ -23,9 +23,9 @@ public class SchemeTransactionService extends CrudService<SchemeTransactions, Lo
         super(repository);
         this.schemeTransactionRepo = schemeTransactionRepo;
     }
-    
-    public SchemeTransactions getSchemeTransactions(long schemeId){
+
+    public SchemeTransactions getSchemeTransactions(long schemeId) {
         return schemeTransactionRepo.findBySchemeId(schemeId)
-                .orElseGet(null);
+                .orElse(null);
     }
 }

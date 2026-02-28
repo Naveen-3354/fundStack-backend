@@ -22,6 +22,7 @@ public class AmfiProperties {
     private String schemeDetail;
     private String schemeDocs;
     private String schemeNavAndAum;
+    private String schemeCSV;
 
     public Map<String, String> asMap() {
         Map<String, String> values = new LinkedHashMap<>();
@@ -36,6 +37,7 @@ public class AmfiProperties {
         values.put("schemeDetail", schemeDetail);
         values.put("schemeDocs", schemeDocs);
         values.put("schemeNavAndAum", schemeNavAndAum);
+        values.put("schemeCSV", schemeCSV);
         return values;
     }
 }

@@ -415,6 +415,7 @@ public class SchemeDetailsService extends CrudService<SchemeDetails, Long>{
         if (dateStr == null || "N/A".equals(dateStr.trim()) || "NA".equals(dateStr.trim()) || dateStr.isBlank()) {
             return null;
         }
+        dateStr = dateStr.trim().replace("-", " ");
         return LocalDate.parse(dateStr.trim(), FORMATTER);
     }
 

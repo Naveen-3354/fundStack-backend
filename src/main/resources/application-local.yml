@@ -29,3 +29,4 @@ amfi:
   schemeDetail: https://www.amfiindia.com/api/scheme-details?MF_ID=%s&scheme_id=%s
   schemeDocs: https://www.amfiindia.com/api/schemes/%s/documents
   schemeNavAndAum: https://www.amfiindia.com/api/scheme-nav?MF_ID=%s&scheme_id=%s&strOption=%s
+  schemeCSV: https://portal.amfiindia.com/DownloadSchemeData_Po.aspx?mf=0

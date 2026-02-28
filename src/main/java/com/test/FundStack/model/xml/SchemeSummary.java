@@ -2,7 +2,7 @@ package com.test.FundStack.model.xml;
 
 
 import lombok.Data;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.math.BigDecimal;
 
